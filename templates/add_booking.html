@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Booking - Vibestay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        body {
+            background: linear-gradient(to right, #f5f7fa, #c3d8ff);
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: auto;
+            padding: 40px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        h2 {
+            font-weight: 700;
+            color: #6f42c1;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .form-group {
+            position: relative;
+        }
+        .form-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6f42c1;
+        }
+        .form-group input,
+        .form-group select {
+            padding-left: 2.2rem;
+        }
+        .btn-primary {
+            background-color: #6f42c1;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #5a369e;
+        }
+    </style>
+</head>
+<body class="py-5">
+
+    <div class="container">
+        <div class="form-container mt-5">
+            <h2 class="mb-4">➕ Add New Booking</h2>
+
+            <form method="POST" onsubmit="return validateForm()">
+                {% csrf_token %}
+
+                <!-- Full Name -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-user form-icon"></i>
+                    <label for="full_name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="full_name" name="full_name" required pattern="^[A-Za-z\s]+$" title="Only alphabets and spaces allowed">
+                </div>
+
+                <!-- Mobile Number -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-phone form-icon"></i>
+                    <label for="mobile_number" class="form-label">Mobile Number</label>
+                    <input type="text" class="form-control" id="mobile_number" name="mobile_number" required pattern="^\d{10}$" title="Enter 10-digit mobile number">
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-envelope form-icon"></i>
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" required pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" title="Only @gmail.com emails allowed">
+                </div>
+
+                <!-- Number of People -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-users form-icon"></i>
+                    <label for="number_of_people" class="form-label">Number of People</label>
+                    <input type="number" class="form-control" id="number_of_people" name="number_of_people" min="1" max="10" required>
+                </div>
+
+                <!-- Room Type -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-bed form-icon"></i>
+                    <label for="room_type" class="form-label">Room Type</label>
+                    <select class="form-select" id="room_type" name="room_type" required>
+                        {% for value, label in form.room_type.field.choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Room Number -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-door-open form-icon"></i>
+                    <label for="room_number" class="form-label">Room Number</label>
+                    <input type="number" class="form-control" id="room_number" name="room_number" min="1" max="20" required>
+                </div>
+
+                <!-- Guest Type -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-user-tag form-icon"></i>
+                    <label for="guest_type" class="form-label">Guest Type</label>
+                    <select class="form-select" id="guest_type" name="guest_type" required>
+                        {% for value, label in form.guest_type.field.choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Gender -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-venus-mars form-icon"></i>
+                    <label for="gender" class="form-label">Gender</label>
+                    <select class="form-select" id="gender" name="gender" required>
+                        {% for value, label in form.gender.field.choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Check-In Date -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-calendar-check form-icon"></i>
+                    <label for="check_in" class="form-label">Check-In Date</label>
+                    <input type="date" class="form-control" id="check_in" name="check_in" required>
+                </div>
+
+                <!-- Check-Out Date -->
+                <div class="mb-3 form-group">
+                    <i class="fas fa-calendar-minus form-icon"></i>
+                    <label for="check_out" class="form-label">Check-Out Date</label>
+                    <input type="date" class="form-control" id="check_out" name="check_out" required>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">⬅ Back to Dashboard</a>
+                    <button type="submit" class="btn btn-primary">Book Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Restrict dates to today and after
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById("check_in").setAttribute("min", today);
+        document.getElementById("check_out").setAttribute("min", today);
+
+        function validateForm() {
+            const checkIn = document.getElementById("check_in").value;
+            const checkOut = document.getElementById("check_out").value;
+            if (checkOut < checkIn) {
+                alert("Check-out date must be the same or after check-in date.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vibestay Hotels - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #e6f2ff, #f0f4f8); /* Soft gradient background */
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #6f42c1, #9b59b6); /* Purple gradient */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #9b59b6, 0 0 30px #d9b3ff;
+            }
+            to {
+                text-shadow: 0 0 20px #d9b3ff, 0 0 30px #9b59b6, 0 0 40px #fff;
+            }
+        }
+
+        .bounce-text {
+            display: inline-block;
+            animation: bounceText 2s ease-in-out infinite;
+            background-color: #d9f0ff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+            font-weight: bold;
+            color: #004085;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        @keyframes bounceText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2mm); }
+        }
+
+        .btn-add-booking {
+            background-color: #8e44ad;
+            color: white;
+        }
+
+        .btn-add-booking:hover {
+            background-color: #732d91;
+        }
+
+        .nav-link.bg-custom {
+            background: linear-gradient(to right, #00b4db, #0083b0);
+            color: white !important;
+            border-radius: 5px;
+            padding: 6px 12px;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            font-weight: bold;
+        }
+
+        .table thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f2f9ff;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e8f7ff;
+            cursor: pointer;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* 🔴 Updated DELETE link: no background, just red icon text */
+        .delete-link {
+            color: #dc3545;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .delete-link:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 5px #ccc;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">Vibestay Admin</a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <!-- Back to Site Button (Styled like Logout) -->
+                <li class="nav-item me-2">
+                    <a href="/" class="nav-link bg-custom btn btn-link p-0" style="color: white; text-decoration: none;">
+                        Back to Site
+                    </a>
+                </li>
+                <!-- Logout Button -->
+                <li class="nav-item">
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link bg-custom btn btn-link p-0" style="color: white; text-decoration: none;">
+                            Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- Main Container -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4 bounce-text">Welcome to Vibestay Admin Panel</h2>
+
+    <div class="row g-4">
+        <!-- Stats -->
+        <div class="col-md-4">
+            <div class="card p-0 bg-light">
+                <div class="card-header bg-info text-white">📊 Quick Stats</div>
+                <div class="card-body">
+                    <p><strong>🏨 Total Rooms:</strong> {{ total_rooms }}</p>
+                    <p><strong>📖 Active Bookings:</strong> {{ active_bookings }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Table -->
+        <div class="col-md-8">
+            <div class="card p-0">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    🛏 Manage Bookings
+                    <div>
+                        <a href="{% url 'booking_history' %}" class="btn btn-info btn-sm text-white">📅 View History</a>
+                        <a href="{% url 'add_booking' %}" class="btn btn-add-booking btn-sm">➕ Add Booking</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Full Name</th>
+                                    <th>Mobile</th>
+                                    <th>Email</th>
+                                    <th>People</th>
+                                    <th>Room Type</th>
+                                    <th>Guest Type</th>
+                                    <th>Gender</th>
+                                    <th>Check-In</th>
+                                    <th>Check-Out</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in bookings %}
+                                    <tr>
+                                        <td>{{ booking.id }}</td>
+                                        <td>{{ booking.full_name }}</td>
+                                        <td>{{ booking.mobile_number }}</td>
+                                        <td>{{ booking.email }}</td>
+                                        <td>{{ booking.number_of_people }}</td>
+                                        <td>{{ booking.get_room_type_display }}</td>
+                                        <td>{{ booking.get_guest_type_display }}</td>
+                                        <td>{{ booking.get_gender_display }}</td>
+                                        <td>{{ booking.check_in }}</td>
+                                        <td>{{ booking.check_out }}</td>
+                                        <td>
+                                            <a href="{% url 'delete_booking' booking.id %}" class="delete-link" onclick="return confirm('Are you sure to delete?')">🗑</a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="11" class="text-center text-muted">No bookings found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

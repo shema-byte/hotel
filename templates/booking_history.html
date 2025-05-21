@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History - Vibestay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(to right, #f0f4ff, #e2ecff);
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .table thead {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .table tbody tr:hover {
+            background-color: #f2f8ff;
+        }
+        .title-icon {
+            font-size: 1.4rem;
+            margin-right: 8px;
+        }
+        .btn-back {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 8px 16px;
+        }
+    </style>
+</head>
+<body class="py-5">
+
+    <div class="container">
+        <div class="card p-4">
+            <h3 class="mb-4 text-primary d-flex align-items-center">
+                <span class="title-icon">📅</span> Booking History (Last 1 Month)
+            </h3>
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Room Type</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.id }}</td>
+                            <td>{{ booking.full_name }}</td>
+                            <td>{{ booking.room_type }}</td>
+                            <td>{{ booking.check_in }}</td>
+                            <td>{{ booking.check_out }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-muted text-center">No bookings found in the last month.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-3">
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-back">⬅ Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
