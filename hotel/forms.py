@@ -70,7 +70,6 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-
 class LoginForm(forms.Form):
-    email = forms.EmailField(label="Email")
-    password = forms.CharField(widget=forms.PasswordInput, label="Password")
+    email = forms.CharField(label='Username or Email')
+    password = forms.CharField(widget=forms.PasswordInput, label='Password')

@@ -19,5 +19,25 @@ document.addEventListener('DOMContentLoaded', function () {
             bookingModal.hide();
         }, 2000);
     });
+    const checkIn = document.getElementById("check_in");
+    const checkOut = document.getElementById("check_out");
+
+    checkIn.addEventListener("change", function () {
+        checkOut.min = this.value;
+    });
+
+    checkOut.addEventListener("change", function () {
+        if (checkIn.value && checkOut.value && checkOut.value <= checkIn.value) {
+            alert("Check-out date must be after the check-in date.");
+            checkOut.value = "";
+        }
+    });
+
+    // Set today's date as minimum for check-in
+    window.onload = () => {
+        const today = new Date().toISOString().split('T')[0];
+        checkIn.setAttribute("min", today);
+    };
+
     
 });

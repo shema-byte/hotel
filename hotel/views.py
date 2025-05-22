@@ -14,7 +14,6 @@ def index(request):
     """Render the homepage."""
     return render(request, 'index.html')
 
-from django.contrib import messages
 
 def book_room(request):
     """Handle room booking."""
@@ -78,31 +77,33 @@ def delete_booking(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id)
     booking.delete()
     return redirect('dashboard')
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
-from .forms import LoginForm  # Ensure LoginForm is defined in forms.py
 
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
+            login_input = form.cleaned_data['email']  # Can be email or username
             password = form.cleaned_data['password']
 
-            try:
-                user_obj = User.objects.get(email=email)
-            except User.DoesNotExist:
+            user_obj = None
+
+            # Try to find the user by username or email
+            if User.objects.filter(username=login_input).exists():
+                user_obj = User.objects.get(username=login_input)
+            elif User.objects.filter(email=login_input).exists():
+                user_obj = User.objects.get(email=login_input)
+            else:
                 return render(request, 'login.html', {
                     'form': form,
-                    'error': 'This email is not registered. Please sign up first.'
+                    'error': 'No account found with that username or email.'
                 })
 
+            # Authenticate using the username (required by Django)
             user = authenticate(request, username=user_obj.username, password=password)
 
             if user is not None:
                 login(request, user)
-                return redirect('dashboard')  # Replace with your actual dashboard URL name
+                return redirect('dashboard')  # Update with your actual URL name
             else:
                 return render(request, 'login.html', {
                     'form': form,
@@ -110,8 +111,9 @@ def user_login(request):
                 })
     else:
         form = LoginForm()
-    
+
     return render(request, 'login.html', {'form': form})
+
 def signup(request):
     """Handle user signup."""
     if request.method == 'POST':

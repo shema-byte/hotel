@@ -9,11 +9,11 @@
 
     <style>
         body {
-            background: linear-gradient(135deg, #e6f2ff, #f0f4f8); /* Soft gradient background */
+            background: linear-gradient(135deg, #e6f2ff, #f0f4f8);
         }
 
         .navbar {
-            background: linear-gradient(90deg, #6f42c1, #9b59b6); /* Purple gradient */
+            background: linear-gradient(90deg, #6f42c1, #9b59b6);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
@@ -32,22 +32,37 @@
             }
         }
 
-        .bounce-text {
-            display: inline-block;
-            animation: bounceText 2s ease-in-out infinite;
-            background-color: #d9f0ff;
-            padding: 12px 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
-            font-weight: bold;
-            color: #004085;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
+        .hero-heading {
+    font-size: 3.5rem; /* Larger and bolder text */
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    animation: floatText 2s ease-in-out infinite alternate;
+    margin-bottom: 20px;
+    display: inline-block;
+    background: linear-gradient(90deg, #6f42c1, #9b59b6);
+    padding: 10px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-        @keyframes bounceText {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-2mm); }
-        }
+.sub-heading {
+    font-size: 1.5rem;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Float animation for text only */
+@keyframes floatText {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-2px); /* approx 0.10cm */
+    }
+}
 
         .btn-add-booking {
             background-color: #8e44ad;
@@ -59,7 +74,7 @@
         }
 
         .nav-link.bg-custom {
-            background: linear-gradient(to right, #00b4db, #0083b0);
+            background: linear-gradient(to right,rgb(214, 190, 207),rgb(95, 186, 216));
             color: white !important;
             border-radius: 5px;
             padding: 6px 12px;
@@ -75,7 +90,7 @@
         }
 
         .table thead {
-            background-color: #007bff;
+            background-color:rgb(178, 167, 209);
             color: white;
         }
 
@@ -92,7 +107,6 @@
             padding: 0.25rem 0.5rem;
         }
 
-        /* 🔴 Updated DELETE link: no background, just red icon text */
         .delete-link {
             color: #dc3545;
             font-size: 1.2rem;
@@ -111,19 +125,18 @@
     </style>
 </head>
 <body>
+
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="#">Vibestay Admin</a>
         <div class="collapse navbar-collapse justify-content-end">
             <ul class="navbar-nav">
-                <!-- Back to Site Button (Styled like Logout) -->
                 <li class="nav-item me-2">
                     <a href="/" class="nav-link bg-custom btn btn-link p-0" style="color: white; text-decoration: none;">
                         Back to Site
                     </a>
                 </li>
-                <!-- Logout Button -->
                 <li class="nav-item">
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
@@ -139,10 +152,10 @@
 
 
 <!-- Main Container -->
-<div class="container mt-5">
-    <h2 class="text-center mb-4 bounce-text">Welcome to Vibestay Admin Panel</h2>
-
-    <div class="row g-4">
+<div class="container mt-5 text-center">
+    <h1 class="hero-heading">Welcome to Vibestay Admin Panel</h1>
+    
+    <div class="row g-4 mt-3">
         <!-- Stats -->
         <div class="col-md-4">
             <div class="card p-0 bg-light">
