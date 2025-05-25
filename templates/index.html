@@ -363,15 +363,30 @@
             </div>
 
             <div class="mb-3">
-                <label for="check_in" class="form-label">Check-In Date</label>
-                <input type="date" class="form-control" name="check_in" id="check_in" required>
-            </div>
+    <label for="check_in" class="form-label">Check-In Date</label>
+    <input 
+        type="date" 
+        class="form-control" 
+        name="check_in" 
+        id="check_in" 
+        required 
+        onkeydown="return false" 
+        autocomplete="off"
+    >
+</div>
 
             <div class="mb-3">
-                <label for="check_out" class="form-label">Check-Out Date</label>
-                <input type="date" class="form-control" name="check_out" id="check_out" required>
-            </div>
-
+    <label for="check_out" class="form-label">Check-Out Date</label>
+    <input 
+        type="date" 
+        class="form-control" 
+        name="check_out" 
+        id="check_out" 
+        required 
+        onkeydown="return false" 
+        autocomplete="off"
+    >
+</div>
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary">Confirm Booking</button>
             </div>
@@ -385,13 +400,31 @@
   </div>
 </div>
 
-<!-- JavaScript to restrict past dates -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const today = new Date().toISOString().split("T")[0];
-        document.getElementById("check_in").setAttribute("min", today);
-        document.getElementById("check_out").setAttribute("min", today);
+document.addEventListener("DOMContentLoaded", function () {
+    const today = new Date().toISOString().split("T")[0];
+    const checkInInput = document.getElementById("check_in");
+    const checkOutInput = document.getElementById("check_out");
+
+    checkInInput.setAttribute("min", today);
+    checkOutInput.setAttribute("min", today);
+
+    // Prevent manual typing (redundant with onkeydown in HTML, but extra safe)
+    checkInInput.addEventListener('keydown', function(e) { e.preventDefault(); });
+    checkOutInput.addEventListener('keydown', function(e) { e.preventDefault(); });
+
+    checkInInput.addEventListener("change", function () {
+        checkOutInput.value = '';
+        checkOutInput.setAttribute("min", this.value);
     });
+
+    checkOutInput.addEventListener("change", function () {
+        if (checkOutInput.value < checkInInput.value) {
+            alert("Check-out date cannot be before check-in date.");
+            checkOutInput.value = '';
+        }
+    });
+});
 </script>
 
     <footer class="footer">
