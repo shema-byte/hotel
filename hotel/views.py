@@ -58,7 +58,6 @@ def book_room(request):
         number_of_people = request.POST.get('number_of_people')
         room_type = request.POST.get('room_type')
         guest_type = request.POST.get('guest_type')
-        gender = request.POST.get('gender')
         check_in = request.POST.get('check_in')
         check_out = request.POST.get('check_out')
 
@@ -70,7 +69,6 @@ def book_room(request):
             number_of_people=number_of_people,
             room_type=room_type,
             guest_type=guest_type,
-            gender=gender,
             check_in=check_in,
             check_out=check_out
         )

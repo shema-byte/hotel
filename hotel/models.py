@@ -16,20 +16,14 @@ class Booking(models.Model):
         ('family', 'Family'),
     ]
     
-    GENDER_CHOICES = [
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other'),
-    ]
+    
     
     full_name = models.CharField(max_length=100)
     mobile_number = models.CharField(max_length=15)
     email = models.EmailField()
-    room_number = models.PositiveIntegerField(default=1)
     number_of_people = models.PositiveIntegerField(default=1)
     room_type = models.CharField(max_length=20, choices=ROOM_CHOICES)
     guest_type = models.CharField(max_length=20, choices=GUEST_TYPE_CHOICES)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     check_in = models.DateField()
     check_out = models.DateField()
     booking_date = models.DateTimeField(auto_now_add=True, null=True)
