@@ -167,6 +167,27 @@ def signup(request):
 
     return render(request, 'signup.html', {'form': form})
 
+
+def signup(request):
+    """Handle user signup."""
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+
+            # Check if email already exists
+            if User.objects.filter(email=email).exists():
+                form.add_error('email', 'This email is already in use.')
+            else:
+                form.save()
+                messages.success(request, 'Account created successfully! You can now log in.')
+                return redirect('customer_login')
+    else:
+        form = SignUpForm()
+
+    return render(request, 'signup.html', {'form': form})
+
+
 def user_logout(request):
     """Handle user logout."""
     logout(request)
