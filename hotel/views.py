@@ -10,10 +10,44 @@ from .forms import SignUpForm, LoginForm ,BookingForm
 from datetime import datetime, timedelta
 
 
+
 def index(request):
     """Render the homepage."""
     return render(request, 'index.html')
 
+def customer_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            login_input = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            user_obj = None
+
+            # Try to find the user by username or email
+            if User.objects.filter(username=login_input).exists():
+                user_obj = User.objects.get(username=login_input)
+            elif User.objects.filter(email=login_input).exists():
+                user_obj = User.objects.get(email=login_input)
+            else:
+                return render(request, 'Customer_login.html', {
+                    'form': form,
+                    'error': 'No account found with that username or email.'
+                })
+
+            user = authenticate(request, username=user_obj.username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect('index')  # redirect to homepage after customer login
+            else:
+                return render(request, 'Customer_login.html', {
+                    'form': form,
+                    'error': 'Incorrect password. Please try again.'
+                })
+    else:
+        form = LoginForm()
+    return render(request, 'Customer_login.html', {'form': form})
 
 def book_room(request):
     """Handle room booking."""

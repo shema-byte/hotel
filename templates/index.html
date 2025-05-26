@@ -24,6 +24,10 @@
                         <a class="nav-link" href="#home">Home</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'customer_login' %}">Customer Login</a>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#rooms">Rooms</a>
                     </li>
                     <li class="nav-item">
@@ -35,6 +39,7 @@
                         <a class="nav-link" href="{% url 'login' %}">Admin Login</a>
                         </a>
                     </li>
+                    
                 </ul>
             </div>
         </div>
@@ -85,7 +90,14 @@
                             <span class="badge bg-warning text-dark">Kettle</span>
                             <span class="badge bg-secondary">No Balcony</span>
                         </div>
-                        <a href="#" class="btn btn-primary book-now" data-room-type="standard">Book Now</a>
+                        {% if user.is_authenticated %}
+  <a href="#" class="btn btn-primary book-now" data-room-type="Standard Room" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
+{% else %}
+  <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
+
+{% endif %}
+
+
 
 
                     </div>
@@ -107,7 +119,13 @@
                             <span class="badge bg-warning text-dark">Coffee Maker</span>
                             <span class="badge bg-secondary">Balcony</span>
                         </div>
-                        <a href="#" class="btn btn-primary book-now" data-room-type="Deluxe">Book Now</a>
+                        {% if user.is_authenticated %}
+  <a href="#" class="btn btn-primary book-now" data-room-type="Deluxe Room" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
+{% else %}
+  <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
+
+{% endif %}
+
 
 
                     </div>
@@ -130,7 +148,13 @@
                             <span class="badge bg-secondary">No Balcony</span>
                             <span class="badge bg-info text-dark">Sofa Bed</span>
                         </div>
-                        <a href="#" class="btn btn-primary book-now" data-room-type="Family">Book Now</a>
+                        {% if user.is_authenticated %}
+  <a href="#" class="btn btn-primary book-now" data-room-type="Family Room" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
+{% else %}
+  <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
+
+{% endif %}
+
                         
 
                     </div>
@@ -153,7 +177,12 @@
                             <span class="badge bg-secondary">Balcony</span>
                             <span class="badge bg-danger">Mini Bar</span>
                         </div>
-                        <a href="#" class="btn btn-primary book-now" data-room-type="Executive Suite">Book Now</a>
+                        {% if user.is_authenticated %}
+  <a href="#" class="btn btn-primary book-now" data-room-type="Executive Suite" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
+{% else %}
+  <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
+
+{% endif %}
 
 
                     </div>
@@ -177,7 +206,12 @@
                             <span class="badge bg-danger">Mini Bar</span>
                             <span class="badge bg-info text-dark">Jacuzzi</span>
                         </div>
-                        <a href="#" class="btn btn-primary book-now" data-room-type="Presidential Suite">Book Now</a>
+                        {% if user.is_authenticated %}
+  <a href="#" class="btn btn-primary book-now" data-room-type="Presidential Suite" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
+{% else %}
+  <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
+
+{% endif %}
 
 
                     </div>
@@ -202,7 +236,13 @@
                             <span class="badge bg-info text-dark">Jacuzzi</span>
                             <span class="badge bg-light text-dark">Champagne</span>
                         </div>
-                        <a href="#" class="btn btn-primary book-now" data-room-type="Honeymoon">Book Now</a>
+                        {% if user.is_authenticated %}
+  <a href="#" class="btn btn-primary book-now" data-room-type="Honeymoon Suite" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
+{% else %}
+  <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
+
+{% endif %}
+
 
 
                     </div>
