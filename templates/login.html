@@ -83,7 +83,7 @@
             {% endif %}
         </form>
         <div class="links">
-            <a href="{% url 'signup' %}">Create an account</a> | <a href="{% url 'forgot_password' %}">Forgot Password?</a>
+            <a href="{% url 'signup' %}?source=admin">Create an account</a> | <a href="{% url 'forgot_password' %}">Forgot Password?</a>
         </div>
         {% if messages %}
             {% for message in messages %}

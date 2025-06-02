@@ -13,7 +13,12 @@ from datetime import datetime, timedelta
 
 def index(request):
     """Render the homepage."""
-    return render(request, 'index.html')
+    context = {}
+    if request.user.is_authenticated:
+        # Get bookings for the current user
+        bookings = Booking.objects.filter(email=request.user.email).order_by('-check_in')
+        context['bookings'] = bookings
+    return render(request, 'index.html', context)
 
 def customer_login(request):
     if request.method == 'POST':
@@ -33,6 +38,13 @@ def customer_login(request):
                 return render(request, 'Customer_login.html', {
                     'form': form,
                     'error': 'No account found with that username or email.'
+                })
+
+            # Check if the user is a staff member
+            if user_obj.is_staff:
+                return render(request, 'Customer_login.html', {
+                    'form': form,
+                    'error': 'This login is for customers only. Please use the admin login.'
                 })
 
             user = authenticate(request, username=user_obj.username, password=password)
@@ -130,6 +142,13 @@ def user_login(request):
                     'error': 'No account found with that username or email.'
                 })
 
+            # Check if the user is a staff member
+            if not user_obj.is_staff:
+                return render(request, 'login.html', {
+                    'form': form,
+                    'error': 'This login is for admin users only. Please use the customer login.'
+                })
+
             # Authenticate using the username (required by Django)
             user = authenticate(request, username=user_obj.username, password=password)
 
@@ -148,6 +167,9 @@ def user_login(request):
 
 def signup(request):
     """Handle user signup."""
+    # Get the source of signup (customer or admin)
+    signup_source = request.GET.get('source', 'customer')
+    
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -157,33 +179,32 @@ def signup(request):
             if User.objects.filter(email=email).exists():
                 form.add_error('email', 'This email is already in use.')
             else:
-                form.save()
+                # Create user but ensure they are not staff
+                user = form.save(commit=False)
+                # Set staff status based on signup source
+                user.is_staff = (signup_source == 'admin')
+                user.save()
                 messages.success(request, 'Account created successfully! You can now log in.')
-                return redirect('login')
+                
+                # Redirect based on signup source
+                if signup_source == 'admin':
+                    return redirect('login')  # Admin login URL
+                else:
+                    return redirect('customer_login')  # Customer login URL
     else:
         form = SignUpForm()
 
+    # Pass the source to the template context
+    context = {
+        'form': form,
+        'signup_source': signup_source
+    }
     return render(request, 'signup.html', {'form': form})
 
-
-def signup(request):
-    """Handle user signup."""
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-
-            # Check if email already exists
-            if User.objects.filter(email=email).exists():
-                form.add_error('email', 'This email is already in use.')
-            else:
-                form.save()
-                messages.success(request, 'Account created successfully! You can now log in.')
-                return redirect('customer_login')
-    else:
-        form = SignUpForm()
-
-    return render(request, 'signup.html', {'form': form})
+def custom_logout(request):
+    logout(request)
+    next_page = request.GET.get('next', 'customer_login')  # or 'home'
+    return redirect(next_page)
 
 
 def user_logout(request):

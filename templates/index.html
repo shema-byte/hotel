@@ -27,6 +27,14 @@
                         <a class="nav-link" href="{% url 'customer_login' %}">Customer Login</a>
                         </a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#my-bookings">My Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="#rooms">Rooms</a>
                     </li>
@@ -71,26 +79,114 @@
     }
   }, 5000);  // 5000 milliseconds = 5 seconds
 </script>
-    
-    <section class="container rooms-section" id="rooms">
-        <h2>Our Rooms</h2>
-        <div class="row" id="roomContainer">
-            <!-- Room 1 -->
-            <div class="col-md-4">
-                <div class="card mb-4 h-100">
-                    <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Standard Room">
-                    <div class="card-body">
-                        <h5 class="card-title">Standard Room</h5>
-                        <p class="card-text"><strong>₹1000 /night</strong></p>
-                        <p class="card-text">A room with a comfortable bed and modern amenities.</p>
-                        <div class="mb-2">
-                            <span class="badge bg-success">Free WiFi</span>
-                            <span class="badge bg-primary">Air Conditioning</span>
-                            <span class="badge bg-dark">TV</span>
-                            <span class="badge bg-warning text-dark">Kettle</span>
-                            <span class="badge bg-secondary">No Balcony</span>
-                        </div>
-                        {% if user.is_authenticated %}
+
+<style>
+html {
+    scroll-behavior: smooth;
+}
+
+.purple-text {
+    color: #6a1b9a;
+    font-weight: 600;
+}
+
+.booking-title {
+    color: #4a148c;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+}
+
+.room-type {
+    color: #6a1b9a;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.my-bookings-container {
+    background-color: #563d7c;
+    padding: 40px 20px;
+    margin: 40px auto;
+    border-radius: 10px;
+    max-width: 1200px;
+}
+.my-bookings-title {
+    color: white;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 30px;
+    font-family: 'Playfair Display', serif;
+    text-transform: none;
+}
+.bookings-table {
+    background-color: #2b2b2b;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+}
+.bookings-table th {
+    background-color: #2b2b2b;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.bookings-table td {
+    padding: 15px;
+    background-color: white;
+    text-align: center;
+    vertical-align: middle;
+}
+.guest-name {
+    color: #ffd700;
+    font-weight: 600;
+}
+.room-type-cell {
+    color: #9c27b0;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+.status-active {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    display: inline-block;
+}
+.status-upcoming {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    display: inline-block;
+}
+</style>
+
+<section class="container rooms-section" id="rooms">
+    <h2>Our Rooms</h2>
+    <div class="row" id="roomContainer">
+        <!-- Room 1 -->
+        <div class="col-md-4">
+            <div class="card mb-4 h-100">
+                <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Standard Room">
+                <div class="card-body">
+                    <h5 class="card-title">Standard Room</h5>
+                    <p class="card-text"><strong>₹1000 /night</strong></p>
+                    <p class="card-text">A room with a comfortable bed and modern amenities.</p>
+                    <div class="mb-2">
+                        <span class="badge bg-success">Free WiFi</span>
+                        <span class="badge bg-primary">Air Conditioning</span>
+                        <span class="badge bg-dark">TV</span>
+                        <span class="badge bg-warning text-dark">Kettle</span>
+                        <span class="badge bg-secondary">No Balcony</span>
+                    </div>
+                    {% if user.is_authenticated %}
   <a href="#" class="btn btn-primary book-now" data-room-type="Standard Room" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
 {% else %}
   <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
@@ -100,26 +196,26 @@
 
 
 
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Room 2 -->
-            <div class="col-md-4">
-                <div class="card mb-4 h-100">
-                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Deluxe Room">
-                    <div class="card-body">
-                        <h5 class="card-title">Deluxe Room</h5>
-                        <p class="card-text"><strong>₹1500 /night</strong></p>
-                        <p class="card-text">Spacious room with king-size bed and stunning city views.</p>
-                        <div class="mb-2">
-                            <span class="badge bg-success">Free WiFi</span>
-                            <span class="badge bg-primary">Air Conditioning</span>
-                            <span class="badge bg-dark">TV</span>
-                            <span class="badge bg-warning text-dark">Coffee Maker</span>
-                            <span class="badge bg-secondary">Balcony</span>
-                        </div>
-                        {% if user.is_authenticated %}
+        <!-- Room 2 -->
+        <div class="col-md-4">
+            <div class="card mb-4 h-100">
+                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Deluxe Room">
+                <div class="card-body">
+                    <h5 class="card-title">Deluxe Room</h5>
+                    <p class="card-text"><strong>₹1500 /night</strong></p>
+                    <p class="card-text">Spacious room with king-size bed and stunning city views.</p>
+                    <div class="mb-2">
+                        <span class="badge bg-success">Free WiFi</span>
+                        <span class="badge bg-primary">Air Conditioning</span>
+                        <span class="badge bg-dark">TV</span>
+                        <span class="badge bg-warning text-dark">Coffee Maker</span>
+                        <span class="badge bg-secondary">Balcony</span>
+                    </div>
+                    {% if user.is_authenticated %}
   <a href="#" class="btn btn-primary book-now" data-room-type="Deluxe Room" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
 {% else %}
   <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
@@ -128,56 +224,56 @@
 
 
 
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Room 3 -->
-            <div class="col-md-4">
-                <div class="card mb-4 h-100">
-                    <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Family Room">
-                    <div class="card-body">
-                        <h5 class="card-title">Family Room</h5>
-                        <p class="card-text"><strong>₹2000 /night</strong></p>
-                        <p class="card-text">Elegant room with luxury furniture and a tranquil atmosphere.</p>
-                        <div class="mb-2">
-                            <span class="badge bg-success">Free WiFi</span>
-                            <span class="badge bg-primary">Air Conditioning</span>
-                            <span class="badge bg-dark">TV</span>
-                            <span class="badge bg-warning text-dark">Coffee Maker</span>
-                            <span class="badge bg-secondary">No Balcony</span>
-                            <span class="badge bg-info text-dark">Sofa Bed</span>
-                        </div>
-                        {% if user.is_authenticated %}
+        <!-- Room 3 -->
+        <div class="col-md-4">
+            <div class="card mb-4 h-100">
+                <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Family Room">
+                <div class="card-body">
+                    <h5 class="card-title">Family Room</h5>
+                    <p class="card-text"><strong>₹2000 /night</strong></p>
+                    <p class="card-text">Elegant room with luxury furniture and a tranquil atmosphere.</p>
+                    <div class="mb-2">
+                        <span class="badge bg-success">Free WiFi</span>
+                        <span class="badge bg-primary">Air Conditioning</span>
+                        <span class="badge bg-dark">TV</span>
+                        <span class="badge bg-warning text-dark">Coffee Maker</span>
+                        <span class="badge bg-secondary">No Balcony</span>
+                        <span class="badge bg-info text-dark">Sofa Bed</span>
+                    </div>
+                    {% if user.is_authenticated %}
   <a href="#" class="btn btn-primary book-now" data-room-type="Family Room" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
 {% else %}
   <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
 
 {% endif %}
 
-                        
+                    
 
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Room 4 -->
-            <div class="col-md-4">
-                <div class="card mb-4 h-100">
-                    <img src="https://diamondhotel.com/wp-content/uploads/2024/02/premier-executive3.jpg" class="card-img-top" alt="Executive Suite">
-                    <div class="card-body">
-                        <h5 class="card-title">Executive Suite</h5>
-                        <p class="card-text"><strong>₹2500 /night</strong></p>
-                        <p class="card-text">A stylish room perfect for solo travelers or business guests.</p>
-                        <div class="mb-2">
-                            <span class="badge bg-success">Free WiFi</span>
-                            <span class="badge bg-primary">Air Conditioning</span>
-                            <span class="badge bg-dark">TV</span>
-                            <span class="badge bg-warning text-dark">Coffee Maker</span>
-                            <span class="badge bg-secondary">Balcony</span>
-                            <span class="badge bg-danger">Mini Bar</span>
-                        </div>
-                        {% if user.is_authenticated %}
+        <!-- Room 4 -->
+        <div class="col-md-4">
+            <div class="card mb-4 h-100">
+                <img src="https://diamondhotel.com/wp-content/uploads/2024/02/premier-executive3.jpg" class="card-img-top" alt="Executive Suite">
+                <div class="card-body">
+                    <h5 class="card-title">Executive Suite</h5>
+                    <p class="card-text"><strong>₹2500 /night</strong></p>
+                    <p class="card-text">A stylish room perfect for solo travelers or business guests.</p>
+                    <div class="mb-2">
+                        <span class="badge bg-success">Free WiFi</span>
+                        <span class="badge bg-primary">Air Conditioning</span>
+                        <span class="badge bg-dark">TV</span>
+                        <span class="badge bg-warning text-dark">Coffee Maker</span>
+                        <span class="badge bg-secondary">Balcony</span>
+                        <span class="badge bg-danger">Mini Bar</span>
+                    </div>
+                    {% if user.is_authenticated %}
   <a href="#" class="btn btn-primary book-now" data-room-type="Executive Suite" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
 {% else %}
   <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
@@ -185,28 +281,28 @@
 {% endif %}
 
 
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Room 5 -->
-            <div class="col-md-4">
-                <div class="card mb-4 h-100">
-                    <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Presidential Suite">
-                    <div class="card-body">
-                        <h5 class="card-title">Presidential Suite</h5>
-                        <p class="card-text"><strong>₹3500 /night</strong></p>
-                        <p class="card-text">A premium room with all the luxury features you need for a perfect stay.</p>
-                        <div class="mb-2">
-                            <span class="badge bg-success">Free WiFi</span>
-                            <span class="badge bg-primary">Air Conditioning</span>
-                            <span class="badge bg-dark">TV</span>
-                            <span class="badge bg-warning text-dark">Coffee Maker</span>
-                            <span class="badge bg-secondary">Balcony</span>
-                            <span class="badge bg-danger">Mini Bar</span>
-                            <span class="badge bg-info text-dark">Jacuzzi</span>
-                        </div>
-                        {% if user.is_authenticated %}
+        <!-- Room 5 -->
+        <div class="col-md-4">
+            <div class="card mb-4 h-100">
+                <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Presidential Suite">
+                <div class="card-body">
+                    <h5 class="card-title">Presidential Suite</h5>
+                    <p class="card-text"><strong>₹3500 /night</strong></p>
+                    <p class="card-text">A premium room with all the luxury features you need for a perfect stay.</p>
+                    <div class="mb-2">
+                        <span class="badge bg-success">Free WiFi</span>
+                        <span class="badge bg-primary">Air Conditioning</span>
+                        <span class="badge bg-dark">TV</span>
+                        <span class="badge bg-warning text-dark">Coffee Maker</span>
+                        <span class="badge bg-secondary">Balcony</span>
+                        <span class="badge bg-danger">Mini Bar</span>
+                        <span class="badge bg-info text-dark">Jacuzzi</span>
+                    </div>
+                    {% if user.is_authenticated %}
   <a href="#" class="btn btn-primary book-now" data-room-type="Presidential Suite" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
 {% else %}
   <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
@@ -214,29 +310,29 @@
 {% endif %}
 
 
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Room 6 -->
-            <div class="col-md-4">
-                <div class="card mb-4 h-100">
-                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Honeymoon Suite" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">Honeymoon Suite</h5>
-                        <p class="card-text"><strong>₹5000 /night</strong></p>
-                        <p class="card-text">A spacious suite with a beautiful interior design for couples.</p>
-                        <div class="mb-2">
-                            <span class="badge bg-success">Free WiFi</span>
-                            <span class="badge bg-primary">Air Conditioning</span>
-                            <span class="badge bg-dark">TV</span>
-                            <span class="badge bg-warning text-dark">Coffee Maker</span>
-                            <span class="badge bg-secondary">Balcony</span>
-                            <span class="badge bg-danger">Mini Bar</span>
-                            <span class="badge bg-info text-dark">Jacuzzi</span>
-                            <span class="badge bg-light text-dark">Champagne</span>
-                        </div>
-                        {% if user.is_authenticated %}
+        <!-- Room 6 -->
+        <div class="col-md-4">
+            <div class="card mb-4 h-100">
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Honeymoon Suite" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">Honeymoon Suite</h5>
+                    <p class="card-text"><strong>₹5000 /night</strong></p>
+                    <p class="card-text">A spacious suite with a beautiful interior design for couples.</p>
+                    <div class="mb-2">
+                        <span class="badge bg-success">Free WiFi</span>
+                        <span class="badge bg-primary">Air Conditioning</span>
+                        <span class="badge bg-dark">TV</span>
+                        <span class="badge bg-warning text-dark">Coffee Maker</span>
+                        <span class="badge bg-secondary">Balcony</span>
+                        <span class="badge bg-danger">Mini Bar</span>
+                        <span class="badge bg-info text-dark">Jacuzzi</span>
+                        <span class="badge bg-light text-dark">Champagne</span>
+                    </div>
+                    {% if user.is_authenticated %}
   <a href="#" class="btn btn-primary book-now" data-room-type="Honeymoon Suite" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</a>
 {% else %}
   <a href="{% url 'customer_login' %}?next={{ request.path }}" class="btn btn-primary">Login to Book</a>
@@ -245,83 +341,133 @@
 
 
 
-                    </div>
                 </div>
             </div>
-
         </div>
-    </section>
-                    
 
-    <section class="container facilities-section" id="facilities">
-        <h2>Our Facilities</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/photo-1657673461323-206b06c9d386?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Swimming Pool">
-                    <h3>Swimming Pool</h3>
-                    <p>Enjoy our temperature-controlled infinity pool with panoramic views</p>
-                </div>
+    </div>
+</section>
+
+{% if user.is_authenticated %}
+<div class="my-bookings-container" id="my-bookings">
+    <h2 class="my-bookings-title">My Bookings</h2>
+    <div class="table-responsive">
+        <table class="bookings-table">
+            <thead>
+                <tr>
+                    <th>👤 GUEST NAME</th>
+                    <th>🏨 ROOM TYPE</th>
+                    <th>CHECK IN</th>
+                    <th>CHECK OUT</th>
+                    <th>NUMBER OF PEOPLE</th>
+                    <th>GUEST TYPE</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bookings %}
+                    {% for booking in bookings %}
+                    <tr>
+                        <td class="guest-name">{{ booking.full_name }}</td>
+                        <td class="room-type-cell">{{ booking.room_type }}</td>
+                        <td>{{ booking.check_in }}</td>
+                        <td>{{ booking.check_out }}</td>
+                        <td>{{ booking.number_of_people }}</td>
+                        <td>{{ booking.guest_type|title }}</td>
+                        <td>
+                            {% now "Y-m-d" as today %}
+                            {% if booking.check_in|date:"Y-m-d" == today %}
+                                <span class="status-active">Active</span>
+                            {% else %}
+                                <span class="status-upcoming">Upcoming</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            <div class="alert alert-info m-0">
+                                <i class="fas fa-info-circle me-2"></i>You don't have any bookings yet. Browse our rooms and make your first booking!
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<section class="container facilities-section" id="facilities">
+    <h2>Our Facilities</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/photo-1657673461323-206b06c9d386?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Swimming Pool">
+                <h3>Swimming Pool</h3>
+                <p>Enjoy our temperature-controlled infinity pool with panoramic views</p>
             </div>
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Gym">
-                    <h3>Fitness Center</h3>
-                    <p>State-of-the-art gym equipment with personal trainers available</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/photo-1667061481921-b31e615ae740?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Spa">
-                    <h3>Spa & Wellness</h3>
-                    <p>Relax with our premium spa treatments and massage therapies</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Restaurant">
-                    <h3>Restaurant</h3>
-                    <p>Fall in love with the new flavors of limited seasonal menu.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/flagged/photo-1576485436509-a7d286952b65?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Conference Room">
-                    <h3>Conference Room</h3>
-                    <p>Fully equipped conference rooms for your business needs</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/photo-1543007630-9710e4a00a20??ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Bar">
-                    <h3>Bar</h3>
-                    <p>Relax with a drink at our stylish bar with a wide selection of beverages</p>
-                </div>
-            </div> 
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/photo-1713777571574-12e4b0ab5275?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Parking">
-                    <h3>Eco Garden</h3>
-                    <p>Let nature refresh your senses in our welcoming Eco Garden.</p>
-                </div>
-            </div>   
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wi-Fi">
-                    <h3>In Room-Service</h3>
-                    <p>Relax and indulge – in-room dining, delivered with care and comfort.</p>
-                </div>
-            </div> 
-            <div class="col-md-4">
-                <div class="facility-card">
-                    <img src="https://images.unsplash.com/photo-1570498839593-e565b39455fc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wi-Fi">
-                    <h3>SportSphere</h3>
-                    <p>Stay in comfort, play in style.
-                    Where every guest is an athlete at heart.</p>
-                </div>
-            </div>    
         </div>
-    </section>
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Gym">
+                <h3>Fitness Center</h3>
+                <p>State-of-the-art gym equipment with personal trainers available</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/photo-1667061481921-b31e615ae740?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Spa">
+                <h3>Spa & Wellness</h3>
+                <p>Relax with our premium spa treatments and massage therapies</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Restaurant">
+                <h3>Restaurant</h3>
+                <p>Fall in love with the new flavors of limited seasonal menu.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/flagged/photo-1576485436509-a7d286952b65?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Conference Room">
+                <h3>Conference Room</h3>
+                <p>Fully equipped conference rooms for your business needs</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/photo-1543007630-9710e4a00a20??ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Bar">
+                <h3>Bar</h3>
+                <p>Relax with a drink at our stylish bar with a wide selection of beverages</p>
+            </div>
+        </div> 
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/photo-1713777571574-12e4b0ab5275?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Parking">
+                <h3>Eco Garden</h3>
+                <p>Let nature refresh your senses in our welcoming Eco Garden.</p>
+            </div>
+        </div>   
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wi-Fi">
+                <h3>In Room-Service</h3>
+                <p>Relax and indulge – in-room dining, delivered with care and comfort.</p>
+            </div>
+        </div> 
+        <div class="col-md-4">
+            <div class="facility-card">
+                <img src="https://images.unsplash.com/photo-1570498839593-e565b39455fc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wi-Fi">
+                <h3>SportSphere</h3>
+                <p>Stay in comfort, play in style.
+                Where every guest is an athlete at heart.</p>
+            </div>
+        </div>    
+    </div>
+</section>
 
 <!-- Booking Modal -->
 <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
@@ -417,6 +563,47 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add event listeners to all "Book Now" buttons
+    document.querySelectorAll('.book-now').forEach(button => {
+        button.addEventListener('click', function() {
+            // Get the room type from the data attribute
+            const roomType = this.getAttribute('data-room-type');
+            console.log('Selected room type:', roomType);
+            // Set it in the hidden input
+            document.getElementById('roomId').value = roomType;
+            console.log('Room type set in form:', document.getElementById('roomId').value);
+        });
+    });
+
+    // Add event listener for modal opening
+    const bookingModal = document.getElementById('bookingModal');
+    bookingModal.addEventListener('show.bs.modal', function (event) {
+        // Get the button that triggered the modal
+        const button = event.relatedTarget;
+        // Get the room type from the button's data attribute
+        const roomType = button.getAttribute('data-room-type');
+        // Set the room type in the hidden input
+        document.getElementById('roomId').value = roomType;
+        console.log('Room type set when modal opens:', roomType);
+    });
+
     const today = new Date().toISOString().split("T")[0];
     const checkInInput = document.getElementById("check_in");
     const checkOutInput = document.getElementById("check_out");
@@ -424,23 +611,50 @@ document.addEventListener("DOMContentLoaded", function () {
     checkInInput.setAttribute("min", today);
     checkOutInput.setAttribute("min", today);
 
-    // Prevent manual typing (redundant with onkeydown in HTML, but extra safe)
+    // Prevent manual typing
     checkInInput.addEventListener('keydown', function(e) { e.preventDefault(); });
     checkOutInput.addEventListener('keydown', function(e) { e.preventDefault(); });
 
+    // When check-in changes
     checkInInput.addEventListener("change", function () {
+        const checkInDate = new Date(this.value);
         checkOutInput.value = '';
-        checkOutInput.setAttribute("min", this.value);
+
+        // Set minimum check-out date
+        const minCheckout = new Date(checkInDate);
+        minCheckout.setDate(minCheckout.getDate());
+
+        // Set maximum check-out date (10 days max stay)
+        const maxCheckout = new Date(checkInDate);
+        maxCheckout.setDate(maxCheckout.getDate() + 10);
+
+        // Format dates
+        const minDateStr = minCheckout.toISOString().split("T")[0];
+        const maxDateStr = maxCheckout.toISOString().split("T")[0];
+
+        checkOutInput.setAttribute("min", minDateStr);
+        checkOutInput.setAttribute("max", maxDateStr);
     });
 
+    // Validate check-out date
     checkOutInput.addEventListener("change", function () {
-        if (checkOutInput.value < checkInInput.value) {
+        const checkInDate = new Date(checkInInput.value);
+        const checkOutDate = new Date(this.value);
+
+        const timeDiff = checkOutDate - checkInDate;
+        const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+        if (dayDiff < 0) {
             alert("Check-out date cannot be before check-in date.");
-            checkOutInput.value = '';
+            this.value = '';
+        } else if (dayDiff > 10) {
+            alert("You can book a maximum of 10 days only.");
+            this.value = '';
         }
     });
 });
 </script>
+
 
     <footer class="footer">
         <div class="container">
@@ -474,6 +688,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>  
-    
 </body>
 </html>

@@ -117,16 +117,7 @@
                     </select>
                 </div>
 
-                <!-- Gender -->
-                <div class="mb-3 form-group">
-                    <i class="fas fa-venus-mars form-icon"></i>
-                    <label for="gender" class="form-label">Gender</label>
-                    <select class="form-select" id="gender" name="gender" required>
-                        {% for value, label in form.gender.field.choices %}
-                            <option value="{{ value }}">{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                
 
                 <!-- Check-In Date -->
                 <div class="mb-3 form-group">

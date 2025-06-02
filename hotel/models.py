@@ -2,12 +2,12 @@ from django.db import models
 
 class Booking(models.Model):
     ROOM_CHOICES = [
-        ('standard', 'Standard Room'),
-        ('deluxe', 'Deluxe Room'),
-        ('family', 'Family Room'),
-        ('executive_suite', 'Executive Suite'),
-        ('presidential_suite', 'Presidential Suite'),
-        ('honeymoon_suite', 'Honeymoon Suite'),
+        ('Standard Room', 'Standard Room'),
+        ('Deluxe Room', 'Deluxe Room'),
+        ('Family Room', 'Family Room'),
+        ('Executive Suite', 'Executive Suite'),
+        ('Presidential Suite', 'Presidential Suite'),
+        ('Honeymoon Suite', 'Honeymoon Suite'),
     ]
     
     GUEST_TYPE_CHOICES = [
@@ -16,13 +16,11 @@ class Booking(models.Model):
         ('family', 'Family'),
     ]
     
-    
-    
     full_name = models.CharField(max_length=100)
     mobile_number = models.CharField(max_length=15)
     email = models.EmailField()
     number_of_people = models.PositiveIntegerField(default=1)
-    room_type = models.CharField(max_length=20, choices=ROOM_CHOICES)
+    room_type = models.CharField(max_length=50, choices=ROOM_CHOICES)
     guest_type = models.CharField(max_length=20, choices=GUEST_TYPE_CHOICES)
     check_in = models.DateField()
     check_out = models.DateField()
